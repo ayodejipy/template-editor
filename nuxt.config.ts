@@ -1,6 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5'
+
 export default defineNuxtConfig({
     devtools: { enabled: true },
+    ssr: false,
     modules: [
         '@nuxt/eslint',
         '@pinia/nuxt',
@@ -9,7 +12,11 @@ export default defineNuxtConfig({
         '@nuxtjs/tailwindcss',
         'nuxt-icon',
     ],
-    // eslint: {
-    //   lintOnStart: false,
-    // },
+    vite: {
+        plugins: [
+            ckeditor5({
+                theme: require.resolve('@ckeditor/ckeditor5-theme-lark'),
+            }),
+        ],
+    },
 })
