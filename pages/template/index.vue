@@ -2,7 +2,7 @@
 import type { IEntity } from '~/types'
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'
 
-const { instance, initializeEditor } = useEditor()
+const { instance, config, initializeEditor } = useEditor()
 const selectedText = ref<string>('')
 
 const entities = ref<IEntity[]>([
@@ -75,7 +75,7 @@ function grabSelection() {
 <template>
     <section class="min-h-screen grid grid-cols-10 gap-4 mt-4">
         <div class="col-span-8 h-full">
-            <TheEditor :content @loaded="onReady" />
+            <TheEditor :config :content @loaded="onReady" />
             {{ instance }}
         </div>
 

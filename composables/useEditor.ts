@@ -1,9 +1,22 @@
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'
 
+// export interface IConfig {}
+
 export default function () {
 	const instance = ref<ClassicEditor | null>(null)
+	const config = reactive({
+    editor: ClassicEditor,
+    options: {
+        plugins: [...EditorPlugins],
+
+        toolbar: {
+            items: ['heading', '|', 'bold', 'italic', 'link', 'undo', 'redo'],
+        },
+    },
+	})
+	
 	const initializeEditor = (editor: ClassicEditor) => {
 		instance.value = editor
 	}
-    return { instance, initializeEditor }
+    return { instance, config, initializeEditor }
 }
