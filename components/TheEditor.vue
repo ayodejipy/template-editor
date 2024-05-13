@@ -35,9 +35,9 @@ function onDestroy(destroyed: ClassicEditor) {
     isDestroyed.value = !isDestroyed.value
 }
 
-onBeforeUnmount(() => {
-    // document.removeEventListener('loaded', onReady)
-})
+// onBeforeUnmount(() => {
+//     window.removeEventListener('loaded', onReady)
+// })
 </script>
 
 <template>

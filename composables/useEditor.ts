@@ -3,20 +3,29 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'
 // export interface IConfig {}
 
 export default function () {
-	const instance = ref<ClassicEditor | null>(null)
-	const config = reactive({
-    editor: ClassicEditor,
-    options: {
-        plugins: [...EditorPlugins],
+    const instance = shallowRef<ClassicEditor | null>(null)
+    const config = reactive({
+        editor: ClassicEditor,
+        options: {
+            plugins: [...EditorPlugins],
 
-        toolbar: {
-            items: ['heading', '|', 'bold', 'italic', 'link', 'undo', 'redo'],
+            toolbar: {
+                items: [
+                    'heading',
+                    '|',
+                    'bold',
+                    'italic',
+                    'link',
+                    'undo',
+                    'redo',
+                ],
+            },
         },
-    },
-	})
-	
-	const initializeEditor = (editor: ClassicEditor) => {
-		instance.value = editor
+    })
+
+    const initializeEditor = (editor: ClassicEditor) => {
+        instance.value = editor
 	}
-    return { instance, config, initializeEditor }
+	
+    return { instance, config: markRaw(config), initializeEditor }
 }
