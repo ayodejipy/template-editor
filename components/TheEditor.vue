@@ -7,8 +7,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-    loaded: [editor: ClassicEditor]
+    loaded: [value: ClassicEditor]
 }>()
+
+const { config } = useEditor()
 
 const editorRef = ref<ClassicEditor | null>(null)
 
@@ -16,28 +18,18 @@ const isDestroyed = ref<boolean>(false)
 
 const content = computed<string>(() => props.content)
 
-const config = reactive({
-    editor: ClassicEditor,
-    options: {
-        plugins: [...EditorPlugins],
 
-        toolbar: {
-            items: ['heading', '|', 'bold', 'italic', 'link', 'undo', 'redo'],
-        },
-    },
-})
-
-function onReady(editor: ClassicEditor) {
-    emit('loaded', editor)
+function onReady(editor: Event | ClassicEditor) {
+    emit('loaded', editor as ClassicEditor)
 }
 
 function onDestroy(destroyed: ClassicEditor) {
     isDestroyed.value = !isDestroyed.value
 }
 
-// onBeforeUnmount(() => {
-//     window.removeEventListener('loaded', onReady)
-// })
+onBeforeUnmount(() => {
+    document.removeEventListener('loaded', onReady)
+})
 </script>
 
 <template>

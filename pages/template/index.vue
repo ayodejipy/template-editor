@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { IEntity } from '~/types'
+import type { IEntityButton, IEntity } from '~/types'
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'
 
 const { instance, config, initializeEditor } = useEditor()
 
-const entities = ref<IEntity[]>([
+const entities = ref<IEntityButton[]>([
     {
         name: 'Name',
         icon: 'i-material-symbols-person',
@@ -34,7 +34,7 @@ const selectedText = ref<string>('')
 const disableEntitiesButtons = computed<boolean>(() => !!selectedText.value)
 
 async function onReady(editor: ClassicEditor) {
-    // console.log("--- editor --- ", instance.value)
+    // console.log('--- editor --- ', editor)
     editor.editing.view.change((writer) => {
         writer.setStyle(
             'min-height',
@@ -58,7 +58,6 @@ function grabSelection() {
 
     const range = selection.getFirstRange()!
     const items = range?.getItems()
-    const placeholder = ` <span class="placeholder-text"> __________________________ </span> `
 
     for (const item of items) {
         selectedText.value = item.data
@@ -69,17 +68,27 @@ function grabSelection() {
         model.change((writer) => {
             // const insertPosition = model.document.selection.getLastPosition()
             const insertPosition = model.document.selection.getLastRange()
-            const text = writer.createText('text_inserted... - ')
+            const highlight = '&nbsp;&nbsp;<span style="background-color: yellow" data-model="firstName"> ____________________ </span>&nbsp;&nbsp;'
 
-            model.insertContent(text, insertPosition)
+            const editor = instance.value!.data
+            const viewFragment = editor.processor.toView(highlight)
+            const modelFragment = editor.toModel(viewFragment)
+
+            model.insertContent(modelFragment, insertPosition)
         })
     }
 }
 
-const onSelectEntity = (entity: string) => {
+const onSelectEntity = (entity: IEntityButton) => {
     console.log({ entity })
 
-    if (entity === 'name') {
+    const formEntity: IEntity = {
+        title: entity.name,
+        reference: '',
+        model: entity.reference,
+    }
+
+    if (entity.reference === 'name') {
         console.log('-- entity name ---')
         grabSelection()
     }

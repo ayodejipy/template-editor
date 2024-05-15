@@ -11,13 +11,29 @@ export default function () {
 
             toolbar: {
                 items: [
+                    'undo',
+                    'redo',
+                    '|',
+                    'sourceEditing',
+                    '|',
                     'heading',
                     '|',
                     'bold',
                     'italic',
                     'link',
-                    'undo',
-                    'redo',
+                ],
+            },
+
+            htmlSupport: {
+                allow: [
+                    {
+                        name: /^(div|span|p)*/,
+                        styles: true,
+                        class: false,
+                        attributes: {
+                            'data-model': true
+                        },
+                    },
                 ],
             },
         },
@@ -25,7 +41,7 @@ export default function () {
 
     const initializeEditor = (editor: ClassicEditor) => {
         instance.value = editor
-	}
-	
-    return { instance, config: markRaw(config), initializeEditor }
+    }
+
+    return { instance, config, initializeEditor }
 }
