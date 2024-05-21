@@ -42,7 +42,7 @@ const navlinks = [
         {
             label: 'Templates',
             icon: 'i-heroicons-home',
-            to: '/template',
+            to: '/templates',
         },
         {
             label: 'Contacts',

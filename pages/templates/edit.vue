@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import type { IEntityButton, IEntity } from '~/types'
+import type { IEntityButton, IEntity, ITemplate } from '~/types'
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'
+import { useTemplateStore } from '~/store/template'
+import { useStorage } from '@vueuse/core'
+import { nanoid } from 'nanoid'
+
+const templateStore = useTemplateStore()
 
 const { instance, config, initializeEditor } = useEditor()
 
@@ -9,29 +14,40 @@ const entities = ref<IEntityButton[]>([
         name: 'Name',
         icon: 'i-material-symbols-person',
         reference: 'name',
+        type: 'string',
     },
     {
         name: 'Email',
         icon: 'i-material-symbols-alternate-email',
         reference: 'email',
+        type: 'string',
     },
     {
         name: 'Phone',
         icon: 'i-material-symbols-call',
         reference: 'phoneNumber',
+        type: 'number',
     },
     {
         name: 'Date',
         icon: 'i-material-symbols-date-range-outline',
         reference: 'date',
+        type: 'date',
     },
 ])
 
 // editor data
 const content = ref<string>('<p>Content of the editor.</p>')
-const selectedText = ref<string>('')
+const selectedContext = ref<string>('')
 
-const disableEntitiesButtons = computed<boolean>(() => !!selectedText.value)
+const newTemplate = ref<ITemplate>({
+    id: nanoid(10),
+    title: 'Template - 001',
+    content: content.value,
+    entities: [],
+    created_at: new Date(),
+    updated_at: new Date(),
+})
 
 async function onReady(editor: ClassicEditor) {
     // console.log('--- editor --- ', editor)
@@ -52,7 +68,8 @@ async function onReady(editor: ClassicEditor) {
     await nextTick()
 }
 
-function grabSelection() {
+function grabSelection(entity: IEntityButton): void {
+    let selectedText: string = ''
     const model = instance.value!.model
     const selection = model.document.selection!
 
@@ -60,15 +77,17 @@ function grabSelection() {
     const items = range?.getItems()
 
     for (const item of items) {
-        selectedText.value = item.data
-        console.log({ item })
+        const { data } = item as { data: string }
+        selectedContext.value = data
+        selectedText = data
     }
 
     if (range) {
         model.change((writer) => {
             // const insertPosition = model.document.selection.getLastPosition()
             const insertPosition = model.document.selection.getLastRange()
-            const highlight = '&nbsp;&nbsp;<span style="background-color: yellow" data-model="firstName"> ____________________ </span>&nbsp;&nbsp;'
+            const highlight =
+                '&nbsp;&nbsp;<span style="background-color: yellow" data-model="firstName"> ____________________ </span>&nbsp;&nbsp;'
 
             const editor = instance.value!.data
             const viewFragment = editor.processor.toView(highlight)
@@ -76,22 +95,28 @@ function grabSelection() {
 
             model.insertContent(modelFragment, insertPosition)
         })
+
+        const entityObject: IEntity = {
+            title: entity.name,
+            reference: entity.reference,
+            model: entity.reference,
+            replacedText: selectedText,
+            type: entity.type,
+        }
+        // get updated text
+        newTemplate.value.content = instance.value!.getData()
+        newTemplate.value.entities.push(entityObject)
     }
 }
 
 const onSelectEntity = (entity: IEntityButton) => {
     console.log({ entity })
 
-    const formEntity: IEntity = {
-        title: entity.name,
-        reference: '',
-        model: entity.reference,
-    }
+    grabSelection(entity)
+}
 
-    if (entity.reference === 'name') {
-        console.log('-- entity name ---')
-        grabSelection()
-    }
+function saveTemplate() {
+    templateStore.addTemplate(newTemplate.value)
 }
 </script>
 
@@ -103,16 +128,25 @@ const onSelectEntity = (entity: IEntityButton) => {
 
         <div class="col-span-2 flex flex-col border border-gray-300">
             <div class="bg-gray-200 text-gray-800 font-semibold py-2 px-4">
-                Select Entity - [--- {{ selectedText }}]
+                Select Entity - [--- {{ selectedContext }}]
             </div>
+
             <div class="p-2 grid grid-cols-3 gap-4">
                 <TheEntity
                     v-for="entity in entities"
                     :key="entity.reference"
                     :entity
-                    :disabled="disableEntitiesButtons"
                     @clicked="onSelectEntity"
                 />
+            </div>
+            <div class="w-full mt-3">
+                <button
+                    type="button"
+                    class="w-full py-3 bg-yellow-400 font-semibold"
+                    @click="saveTemplate"
+                >
+                    Save template
+                </button>
             </div>
         </div>
     </section>

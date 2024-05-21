@@ -18,7 +18,6 @@ const isDestroyed = ref<boolean>(false)
 
 const content = computed<string>(() => props.content)
 
-
 function onReady(editor: Event | ClassicEditor) {
     emit('loaded', editor as ClassicEditor)
 }

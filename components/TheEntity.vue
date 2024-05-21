@@ -3,7 +3,7 @@ import type { IEntityButton } from '~/types'
 
 defineProps<{
     entity: IEntityButton
-    disabled: boolean
+    disabled?: boolean
 }>()
 
 const emit = defineEmits<{
