@@ -3,5 +3,7 @@ const route = useRoute()
 </script>
 
 <template>
-    {{ route }}
+    <div>
+        <NuxtPage />
+    </div>
 </template>

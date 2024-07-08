@@ -3,7 +3,7 @@
 <template>
     <AppHeader />
 
-    <main class="px-4">
+    <main class="px-6">
         <slot />
     </main>
 

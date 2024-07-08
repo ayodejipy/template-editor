@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { IEntityButton, IEntity, ITemplate } from '~/types'
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'
-import { useTemplateStore } from '~/store/template'
+import { useTemplateStore } from '~/stores/template'
 import { useStorage } from '@vueuse/core'
 import { nanoid } from 'nanoid'
 

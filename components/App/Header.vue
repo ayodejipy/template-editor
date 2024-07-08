@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const route = useRoute()
 
+const { isLoggedIn, user } = storeToRefs(useUserStore())
+
 const topbarLinks = [
     [
         {
@@ -14,15 +16,6 @@ const topbarLinks = [
         {
             label: 'Templates',
             to: '/templates',
-        },
-    ],
-    [
-        {
-            label: 'Dunk',
-            avatar: {
-                src: 'https://avatars.githubusercontent.com/u/739984?v=4',
-            },
-            badge: 100,
         },
     ],
 ]
@@ -47,7 +40,7 @@ const navlinks = [
         {
             label: 'Contacts',
             icon: 'i-heroicons-home',
-            to: '/templates',
+            to: '/contacts',
         },
     ],
 ]
@@ -55,10 +48,14 @@ const navlinks = [
 
 <template>
     <header class="w-full">
-        <UHorizontalNavigation
-            :links="topbarLinks"
-            class="md:px-8 items-center border-b border-gray-200 dark:border-gray-800"
-        />
+        <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 md:px-8">
+            <UHorizontalNavigation
+                :links="topbarLinks"
+                class="items-center"
+            />
+
+            <AppUserDropdown />
+        </div>
 
         <div class="md:px-8 w-full flex items-center my-6">
             <h1 class="font-semibold text-3xl">Dashboard</h1>
